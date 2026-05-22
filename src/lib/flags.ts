@@ -1,0 +1,31 @@
+const flags: Record<string, string> = {
+  Australia: "🇦🇺",
+  Austria: "🇦🇹",
+  Azerbaijan: "🇦🇿",
+  Bahrain: "🇧🇭",
+  Belgium: "🇧🇪",
+  Brazil: "🇧🇷",
+  Canada: "🇨🇦",
+  China: "🇨🇳",
+  France: "🇫🇷",
+  Germany: "🇩🇪",
+  Hungary: "🇭🇺",
+  Italy: "🇮🇹",
+  Japan: "🇯🇵",
+  Korea: "🇰🇷",
+  Mexico: "🇲🇽",
+  Monaco: "🇲🇨",
+  Netherlands: "🇳🇱",
+  Portugal: "🇵🇹",
+  Qatar: "🇶🇦",
+  "Saudi Arabia": "🇸🇦",
+  Singapore: "🇸🇬",
+  Spain: "🇪🇸",
+  Turkey: "🇹🇷",
+  UAE: "🇦🇪",
+  UK: "🇬🇧",
+  USA: "🇺🇸",
+}
+
+export const flagForCountry = (country: string): string =>
+  flags[country] ?? "🏁"
