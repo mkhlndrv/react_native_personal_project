@@ -1,0 +1,33 @@
+{
+  "name": "skypit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "lint": "npm run lint-typecheck && npm run lint-eslint && npm run lint-prettier && npm run lint-knip",
+    "lint-typecheck": "tsc --noEmit",
+    "lint-eslint": "eslint .",
+    "lint-prettier": "prettier --check .",
+    "lint-knip": "knip"
+  },
+  "dependencies": {
+    "expo": "~54.0.33",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@christopherjbaker/eslint-config": "^3.1.4",
+    "@types/react": "~19.1.0",
+    "eslint": "^9.39.4",
+    "eslint-config-expo": "^55.0.1",
+    "knip": "^6.14.1",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.2"
+  }
+}
