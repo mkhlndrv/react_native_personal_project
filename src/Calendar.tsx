@@ -1,7 +1,9 @@
+import { Link } from "expo-router"
 import { useEffect, useState } from "react"
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -15,11 +17,9 @@ type ApiResponse = {
   MRData: { RaceTable: { Races: Race[] } }
 }
 
-type Props = {
-  season: number
-}
+const SEASON = 2026
 
-const Calendar: React.FC<Props> = ({ season }) => {
+const Calendar: React.FC = () => {
   const [races, setRaces] = useState<Race[]>([])
   const [status, setStatus] = useState<Status>("loading")
 
@@ -27,7 +27,7 @@ const Calendar: React.FC<Props> = ({ season }) => {
     let cancelled = false
     setStatus("loading")
 
-    fetch(`https://api.jolpi.ca/ergast/f1/${season}.json`)
+    fetch(`https://api.jolpi.ca/ergast/f1/${SEASON}.json`)
       .then((r) => r.json())
       .then((raw: ApiResponse) => {
         if (cancelled) return
@@ -42,7 +42,7 @@ const Calendar: React.FC<Props> = ({ season }) => {
     return () => {
       cancelled = true
     }
-  }, [season])
+  }, [])
 
   if (status === "loading") {
     return (
@@ -78,7 +78,11 @@ const Calendar: React.FC<Props> = ({ season }) => {
       data={races}
       keyExtractor={(race) => race.round}
       renderItem={({ item }) => (
-        <RaceRow race={item} isNext={item.round === nextRound} />
+        <Link href={`/race/${item.round}`} asChild>
+          <Pressable>
+            <RaceRow race={item} isNext={item.round === nextRound} />
+          </Pressable>
+        </Link>
       )}
     />
   )
