@@ -2,7 +2,10 @@ import { Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
 
-import { flagForCountry } from "#shared/flags"
+import Card from "#design/elements/Card"
+import CountryChip from "#design/elements/CountryChip"
+import Typography from "#design/elements/Typography"
+import { colors, spacing } from "#design/foundations"
 
 import { type Race, type Session } from "./types"
 
@@ -12,17 +15,51 @@ type ApiResponse = {
 
 type Status = "loading" | "ready" | "error" | "missing"
 
-const formatSession = (session: Session): string => {
+type SessionRow = {
+  label: string
+  session: Session
+  when: number
+}
+
+const sessionWhen = (session: Session): number => {
   const iso = session.time ? `${session.date}T${session.time}` : session.date
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return session.date
-  return d.toLocaleString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
+  const ms = new Date(iso).getTime()
+  return Number.isNaN(ms) ? Number.POSITIVE_INFINITY : ms
+}
+
+const formatDay = (session: Session): string => {
+  const iso = session.time ? `${session.date}T${session.time}` : session.date
+  return new Date(iso)
+    .toLocaleDateString("en-GB", { weekday: "short" })
+    .toUpperCase()
+}
+
+const formatTime = (session: Session): string => {
+  if (!session.time) return "—"
+  const iso = `${session.date}T${session.time}`
+  return new Date(iso).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
   })
+}
+
+const buildSessions = (race: Race): SessionRow[] => {
+  const out: SessionRow[] = []
+  const push = (label: string, session?: Session): void => {
+    if (session) out.push({ label, session, when: sessionWhen(session) })
+  }
+  push("Practice 1", race.FirstPractice)
+  push("Practice 2", race.SecondPractice)
+  push("Practice 3", race.ThirdPractice)
+  push("Qualifying", race.Qualifying)
+  push("Sprint", race.Sprint)
+  out.push({
+    label: "Race",
+    session: { date: race.date, time: race.time },
+    when: sessionWhen({ date: race.date, time: race.time }),
+  })
+  return out
 }
 
 const RaceDetail: React.FC = () => {
@@ -61,7 +98,7 @@ const RaceDetail: React.FC = () => {
       <>
         <Stack.Screen options={{ title: `Round ${round ?? ""}` }} />
         <View style={styles.center}>
-          <ActivityIndicator />
+          <ActivityIndicator color={colors.brand} />
         </View>
       </>
     )
@@ -72,56 +109,58 @@ const RaceDetail: React.FC = () => {
       <>
         <Stack.Screen options={{ title: `Round ${round ?? ""}` }} />
         <View style={styles.center}>
-          <Text style={styles.muted}>
+          <Typography variant="muted">
             {status === "missing"
               ? "No race found for that round."
               : "Couldn't load the race. Check your connection."}
-          </Text>
+          </Typography>
         </View>
       </>
     )
   }
 
-  const sessions: Array<{ label: string; session: Session }> = []
-  if (race.FirstPractice)
-    sessions.push({ label: "Practice 1", session: race.FirstPractice })
-  if (race.SecondPractice)
-    sessions.push({ label: "Practice 2", session: race.SecondPractice })
-  if (race.ThirdPractice)
-    sessions.push({ label: "Practice 3", session: race.ThirdPractice })
-  if (race.Qualifying)
-    sessions.push({ label: "Qualifying", session: race.Qualifying })
-  if (race.Sprint) sessions.push({ label: "Sprint", session: race.Sprint })
-  sessions.push({
-    label: "Race",
-    session: { date: race.date, time: race.time },
-  })
+  const sessions = buildSessions(race)
+  const now = Date.now()
+  const nextWhen = sessions.find((s) => s.when >= now)?.when
 
   return (
     <>
       <Stack.Screen options={{ title: race.raceName }} />
 
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.flag}>
-            {flagForCountry(race.Circuit.Location.country)}
-          </Text>
-          <View style={styles.headerText}>
-            <Text style={styles.gpName}>{race.raceName}</Text>
-            <Text style={styles.circuit}>
-              {race.Circuit.circuitName} · {race.Circuit.Location.locality}
-            </Text>
-          </View>
+        <View style={styles.hero}>
+          <CountryChip country={race.Circuit.Location.country} size="lg" />
+          <Typography variant="title">{race.raceName}</Typography>
+          <Typography variant="muted">
+            {race.Circuit.circuitName}
+            {race.Circuit.Location.locality
+              ? ` · ${race.Circuit.Location.locality}`
+              : ""}
+          </Typography>
         </View>
 
-        <View style={styles.sessions}>
-          {sessions.map(({ label, session }) => (
-            <View key={label} style={styles.sessionRow}>
-              <Text style={styles.sessionLabel}>{label}</Text>
-              <Text style={styles.sessionTime}>{formatSession(session)}</Text>
-            </View>
-          ))}
-        </View>
+        <Card>
+          {sessions.map(({ label, session, when }) => {
+            const isNext = when === nextWhen
+            return (
+              <View
+                key={label}
+                style={[styles.sessionRow, isNext && styles.sessionRowNext]}
+              >
+                <Typography variant="mono">{formatDay(session)}</Typography>
+                <View style={styles.sessionTime}>
+                  <Typography variant="mono">{formatTime(session)}</Typography>
+                </View>
+                <Typography variant="normal">{label}</Typography>
+                {isNext ? (
+                  <View style={styles.pill}>
+                    <Text style={styles.pillText}>NEXT</Text>
+                  </View>
+                ) : null}
+              </View>
+            )
+          })}
+        </Card>
       </View>
     </>
   )
@@ -132,59 +171,47 @@ export default RaceDetail
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.background,
+    paddingHorizontal: spacing.screen,
   },
   center: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 24,
+    backgroundColor: colors.background,
+    padding: spacing.inside,
   },
-  muted: {
-    color: "#666",
-    textAlign: "center",
-  },
-  header: {
-    flexDirection: "row",
+  hero: {
     alignItems: "center",
-    padding: 16,
-    gap: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e0e0e0",
-  },
-  flag: {
-    fontSize: 40,
-  },
-  headerText: {
-    flex: 1,
-  },
-  gpName: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  circuit: {
-    marginTop: 2,
-    fontSize: 13,
-    color: "#666",
-  },
-  sessions: {
-    paddingVertical: 8,
+    paddingVertical: spacing.inside,
+    gap: 10,
   },
   sessionRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#eee",
+    alignItems: "center",
+    paddingVertical: 10,
+    gap: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: "transparent",
+    paddingLeft: 8,
   },
-  sessionLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#222",
+  sessionRowNext: {
+    borderLeftColor: colors.brand,
   },
   sessionTime: {
-    fontSize: 14,
-    color: "#555",
+    width: 56,
+  },
+  pill: {
+    backgroundColor: colors.brand,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginLeft: "auto",
+  },
+  pillText: {
+    color: colors.body,
+    fontFamily: "JetBrainsMono_700Bold",
+    fontSize: 10,
+    letterSpacing: 1,
   },
 })

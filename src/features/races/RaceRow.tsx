@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native"
 
-import { flagForCountry } from "#shared/flags"
+import CountryChip from "#design/elements/CountryChip"
+import Typography from "#design/elements/Typography"
+import { colors, spacing } from "#design/foundations"
 
 import { type Race } from "./types"
 
@@ -9,32 +11,31 @@ type Props = {
   isNext: boolean
 }
 
-const RaceRow: React.FC<Props> = ({ race, isNext }) => {
-  const date = new Date(race.date).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  })
+const formatDate = (iso: string): string =>
+  new Date(iso)
+    .toLocaleDateString("en-GB", { day: "2-digit", month: "short" })
+    .toUpperCase()
 
+const RaceRow: React.FC<Props> = ({ race, isNext }) => {
   return (
     <View style={styles.row}>
-      <Text style={styles.flag}>
-        {flagForCountry(race.Circuit.Location.country)}
-      </Text>
+      <CountryChip country={race.Circuit.Location.country} />
 
       <View style={styles.middle}>
-        <View style={styles.titleRow}>
-          <Text style={styles.round}>R{race.round}</Text>
-          <Text style={styles.name} numberOfLines={1}>
-            {race.raceName}
-          </Text>
-          {isNext ? <Text style={styles.pill}>NEXT</Text> : null}
-        </View>
-        <Text style={styles.circuit} numberOfLines={1}>
-          {race.Circuit.circuitName}
-        </Text>
+        <Typography variant="large">{race.raceName}</Typography>
+        <Typography variant="muted">
+          R{race.round} · {race.Circuit.circuitName}
+        </Typography>
       </View>
 
-      <Text style={styles.date}>{date}</Text>
+      <View style={styles.right}>
+        <Typography variant="mono">{formatDate(race.date)}</Typography>
+        {isNext ? (
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>NEXT</Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   )
 }
@@ -45,49 +46,30 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
+    paddingHorizontal: spacing.screen,
+    paddingVertical: 14,
+    gap: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e0e0e0",
-    gap: 12,
-  },
-  flag: {
-    fontSize: 28,
+    borderBottomColor: colors.border,
   },
   middle: {
     flex: 1,
+    gap: 4,
   },
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  round: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#888",
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "600",
-    flexShrink: 1,
+  right: {
+    alignItems: "flex-end",
+    gap: 6,
   },
   pill: {
-    fontSize: 10,
-    fontWeight: "700",
-    color: "#fff",
-    backgroundColor: "#e10600",
+    backgroundColor: colors.brand,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    overflow: "hidden",
   },
-  circuit: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 2,
-  },
-  date: {
-    fontSize: 13,
-    color: "#444",
+  pillText: {
+    color: colors.body,
+    fontFamily: "JetBrainsMono_700Bold",
+    fontSize: 10,
+    letterSpacing: 1,
   },
 })

@@ -5,6 +5,7 @@
   "type": "module",
   "main": "expo-router/entry",
   "imports": {
+    "#design/*": "./src/shared/design/*/index.ts",
     "#features/*": "./src/features/*/index.ts",
     "#shared/*": "./src/shared/*/index.ts"
   },
@@ -20,8 +21,11 @@
     "lint-knip": "knip"
   },
   "dependencies": {
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
     "@expo/metro-runtime": "~6.1.2",
+    "@expo/vector-icons": "^15.1.1",
     "expo": "~54.0.33",
+    "expo-font": "^56.0.5",
     "expo-router": "~6.0.23",
     "react": "19.1.0",
     "react-dom": "19.1.0",

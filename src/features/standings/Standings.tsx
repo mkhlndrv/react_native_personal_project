@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
+
+import Typography from "#design/elements/Typography"
+import { colors, spacing } from "#design/foundations"
 
 const Standings: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Standings</Text>
-      <Text style={styles.hint}>Driver standings land here next.</Text>
+      <Typography variant="title">Standings</Typography>
+      <Typography variant="muted">Driver standings land here next.</Typography>
     </View>
   )
 }
@@ -16,16 +19,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-  hint: {
-    marginTop: 8,
-    fontSize: 13,
-    color: "#888",
+    backgroundColor: colors.background,
+    padding: spacing.inside,
+    gap: 8,
   },
 })

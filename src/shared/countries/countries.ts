@@ -1,0 +1,31 @@
+const codes: Record<string, string> = {
+  Australia: "AUS",
+  Austria: "AUT",
+  Azerbaijan: "AZE",
+  Bahrain: "BHR",
+  Belgium: "BEL",
+  Brazil: "BRA",
+  Canada: "CAN",
+  China: "CHN",
+  France: "FRA",
+  Germany: "GER",
+  Hungary: "HUN",
+  Italy: "ITA",
+  Japan: "JPN",
+  Korea: "KOR",
+  Mexico: "MEX",
+  Monaco: "MON",
+  Netherlands: "NED",
+  Portugal: "POR",
+  Qatar: "QAT",
+  "Saudi Arabia": "SAU",
+  Singapore: "SGP",
+  Spain: "ESP",
+  Turkey: "TUR",
+  UAE: "UAE",
+  UK: "GBR",
+  USA: "USA",
+}
+
+export const codeForCountry = (country: string): string =>
+  codes[country] ?? country.slice(0, 3).toUpperCase()

@@ -1,60 +1,20 @@
 # SkyPit
 
-An F1 race-weekend companion: session times, reminders, standings, per-race stats.
+SkyPit is a mobile F1 race-weekend companion. The Calendar tab shows the season's Grand Prix list with a country code chip, round number, circuit, and date on each row, and a NEXT pill on the upcoming race. Tap any race for a detail screen with the full session schedule — practice, qualifying, sprint, race — in local time, with the next future session highlighted. A Standings tab and a Settings tab round out the bottom navigation.
 
-Personal project for Harbour.Space FE411: React Native.
-
-## What it does
-
-- Browse the season's Grand Prix calendar with session times in your local timezone.
-- Toggle a per-session reminder; get a local notification before lights out.
-- After a race, see pole, podium, and fastest lap on the same GP screen.
-- Pick a favourite driver + constructor; they get pinned in standings and badged on the calendar.
-
-## Planned screens
-
-- **Calendar** — list of the season, tap a row for detail.
-- **GP detail** — sessions list with reminder toggles; results panel after the race.
-- **Standings** — drivers' championship, pull-to-refresh.
-- **Settings** — favourites, reminder lead time, clear local data.
-
-## Data
-
-Read-only from [Jolpica-F1](https://api.jolpi.ca/) (the Ergast successor). User state in `AsyncStorage`. No backend.
-
-## Stack
-
-Expo SDK 54, TypeScript strict, ESLint 9 + `@christopherjbaker/eslint-config/react-strict`, Prettier (no-semi), Knip.
-
-## Getting started
-
-```sh
-npm install
-npm start
-npm run ios | android | web
-```
-
-## Linting
-
-```sh
-npm run lint          # typecheck → eslint → prettier --check → knip
-```
-
-Sub-scripts (`lint-typecheck`, `lint-eslint`, `lint-prettier`, `lint-knip`) run individually.
+Race data comes from the free Jolpica-F1 API (the Ergast successor), so no API key is required.
 
 ## Potential features
 
-- Full qualifying grid on GP detail (currently pole sitter only)
-- Sprint-weekend handling (separate sprint result row)
-- Constructors / drivers toggle on Standings
-- "Now" landing tab with next-session countdown
-- Timezone override (currently auto-detected)
+- Per-session reminders with local push notifications before lights out
+- Real drivers' and constructors' standings with pull-to-refresh
+- Favourite driver and constructor pinned in standings and badged on the calendar
+- Results panel on GP detail (pole, podium, fastest lap) after the race
+- Sprint-weekend handling on the schedule
+- "Now" landing tab with a next-session countdown
 - Year switcher to browse past seasons
-- Driver + constructor detail screens with season stats
-- Results trend charts (points, podium streaks)
+- Driver and constructor detail screens with season stats
 - Circuit map preview on GP detail
-- Light / dark theme
+- Light theme alongside the current paddock dark
 - Offline cache of schedule and standings
-- Push notifications via EAS
 - Calendar export to the system calendar
-- Apple Watch complication for the next session

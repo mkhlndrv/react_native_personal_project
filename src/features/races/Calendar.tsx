@@ -5,9 +5,11 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native"
+
+import Typography from "#design/elements/Typography"
+import { colors, spacing } from "#design/foundations"
 
 import RaceRow from "./RaceRow"
 import { type Race } from "./types"
@@ -48,7 +50,7 @@ const Calendar: React.FC = () => {
   if (status === "loading") {
     return (
       <View style={styles.center}>
-        <ActivityIndicator />
+        <ActivityIndicator color={colors.brand} />
       </View>
     )
   }
@@ -56,9 +58,9 @@ const Calendar: React.FC = () => {
   if (status === "error") {
     return (
       <View style={styles.center}>
-        <Text style={styles.muted}>
+        <Typography variant="muted">
           Couldn&apos;t load the calendar. Check your connection.
-        </Text>
+        </Typography>
       </View>
     )
   }
@@ -66,7 +68,7 @@ const Calendar: React.FC = () => {
   if (status === "empty") {
     return (
       <View style={styles.center}>
-        <Text style={styles.muted}>No races yet for this season.</Text>
+        <Typography variant="muted">No races yet for this season.</Typography>
       </View>
     )
   }
@@ -76,6 +78,7 @@ const Calendar: React.FC = () => {
 
   return (
     <FlatList
+      style={styles.list}
       data={races}
       keyExtractor={(race) => race.round}
       renderItem={({ item }) => (
@@ -92,14 +95,14 @@ const Calendar: React.FC = () => {
 export default Calendar
 
 const styles = StyleSheet.create({
+  list: {
+    backgroundColor: colors.background,
+  },
   center: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 24,
-  },
-  muted: {
-    color: "#666",
-    textAlign: "center",
+    padding: spacing.inside,
+    backgroundColor: colors.background,
   },
 })

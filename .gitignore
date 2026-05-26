@@ -42,3 +42,6 @@ yarn-error.*
 
 # local design docs (not for grading)
 docs/
+
+# local assistant config (not for grading)
+CLAUDE.md

@@ -1,8 +1,21 @@
 import { Stack } from "expo-router"
 
+import { colors } from "#design/foundations"
+
 const HomeStackLayout: React.FC = () => {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.background },
+        headerTintColor: colors.body,
+        headerShadowVisible: false,
+        headerTitleStyle: {
+          fontFamily: "JetBrainsMono_700Bold",
+          fontSize: 16,
+        },
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
       <Stack.Screen name="index" options={{ title: "2026 Calendar" }} />
       <Stack.Screen name="race/[round]" options={{ title: "Race" }} />
     </Stack>
