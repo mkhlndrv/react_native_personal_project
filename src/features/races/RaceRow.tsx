@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
-import CountryChip from "#design/elements/CountryChip"
+import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
+import CountryChip from "#design/patterns/CountryChip"
 
 import { type Race } from "./types"
 
@@ -30,11 +31,7 @@ const RaceRow: React.FC<Props> = ({ race, isNext }) => {
 
       <View style={styles.right}>
         <Typography variant="mono">{formatDate(race.date)}</Typography>
-        {isNext ? (
-          <View style={styles.pill}>
-            <Text style={styles.pillText}>NEXT</Text>
-          </View>
-        ) : null}
+        {isNext ? <Pill>NEXT</Pill> : null}
       </View>
     </View>
   )
@@ -47,29 +44,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: spacing.screen,
-    paddingVertical: 14,
-    gap: 14,
+    paddingVertical: spacing.lg,
+    gap: spacing.lg,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
   middle: {
     flex: 1,
-    gap: 4,
+    gap: spacing.xs,
   },
   right: {
     alignItems: "flex-end",
-    gap: 6,
-  },
-  pill: {
-    backgroundColor: colors.brand,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  pillText: {
-    color: colors.body,
-    fontFamily: "JetBrainsMono_700Bold",
-    fontSize: 10,
-    letterSpacing: 1,
+    gap: spacing.sm,
   },
 })

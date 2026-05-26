@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: colors.background,
     padding: spacing.inside,
-    gap: 8,
+    gap: spacing.md,
   },
 })

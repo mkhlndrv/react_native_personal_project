@@ -1,6 +1,6 @@
 import { Stack } from "expo-router"
 
-import { colors } from "#design/foundations"
+import { colors, fonts } from "#design/foundations"
 
 const HomeStackLayout: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ const HomeStackLayout: React.FC = () => {
         headerTintColor: colors.body,
         headerShadowVisible: false,
         headerTitleStyle: {
-          fontFamily: "JetBrainsMono_700Bold",
+          fontFamily: fonts.bold,
           fontSize: 16,
         },
         contentStyle: { backgroundColor: colors.background },

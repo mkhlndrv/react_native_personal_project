@@ -8,7 +8,7 @@ import {
 import { Stack } from "expo-router"
 import { StatusBar, View } from "react-native"
 
-import { colors } from "#design/foundations"
+import { colors, fonts } from "#design/foundations"
 
 const RootLayout: React.FC = () => {
   const [loaded] = useFonts({
@@ -31,7 +31,7 @@ const RootLayout: React.FC = () => {
           headerTintColor: colors.body,
           headerShadowVisible: false,
           headerTitleStyle: {
-            fontFamily: "JetBrainsMono_700Bold",
+            fontFamily: fonts.bold,
             fontSize: 16,
           },
           contentStyle: { backgroundColor: colors.background },

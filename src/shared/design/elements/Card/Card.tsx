@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     padding: spacing.inside,
     marginVertical: spacing.between / 2,
 
-    borderRadius: shapes.borderRadius,
+    borderRadius: shapes.card,
     backgroundColor: colors.surface,
   },
 })

@@ -1,11 +1,12 @@
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
+import { ActivityIndicator, StyleSheet, View } from "react-native"
 
 import Card from "#design/elements/Card"
-import CountryChip from "#design/elements/CountryChip"
+import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
+import CountryChip from "#design/patterns/CountryChip"
 
 import { type Race, type Session } from "./types"
 
@@ -153,8 +154,8 @@ const RaceDetail: React.FC = () => {
                 </View>
                 <Typography variant="normal">{label}</Typography>
                 {isNext ? (
-                  <View style={styles.pill}>
-                    <Text style={styles.pillText}>NEXT</Text>
+                  <View style={styles.pillSlot}>
+                    <Pill>NEXT</Pill>
                   </View>
                 ) : null}
               </View>
@@ -184,16 +185,16 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: "center",
     paddingVertical: spacing.inside,
-    gap: 10,
+    gap: spacing.md,
   },
   sessionRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    gap: 16,
+    paddingVertical: spacing.md,
+    gap: spacing.xl,
     borderLeftWidth: 3,
     borderLeftColor: "transparent",
-    paddingLeft: 8,
+    paddingLeft: spacing.md,
   },
   sessionRowNext: {
     borderLeftColor: colors.brand,
@@ -201,17 +202,7 @@ const styles = StyleSheet.create({
   sessionTime: {
     width: 56,
   },
-  pill: {
-    backgroundColor: colors.brand,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+  pillSlot: {
     marginLeft: "auto",
-  },
-  pillText: {
-    color: colors.body,
-    fontFamily: "JetBrainsMono_700Bold",
-    fontSize: 10,
-    letterSpacing: 1,
   },
 })

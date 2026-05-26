@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native"
 
-import { colors, shapes } from "#design/foundations"
+import { colors, fonts, shapes } from "#design/foundations"
 import { codeForCountry } from "#shared/countries"
 
 export type CountryChipProps = {
@@ -23,7 +23,7 @@ export default CountryChip
 const styles = StyleSheet.create({
   chip: {
     backgroundColor: colors.surface,
-    borderRadius: shapes.borderRadius / 2,
+    borderRadius: shapes.chip,
     borderWidth: 1,
     borderColor: colors.border,
     alignItems: "center",
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   code: {
     color: colors.body,
-    fontFamily: "JetBrainsMono_700Bold",
+    fontFamily: fonts.bold,
     letterSpacing: 1,
   },
 })

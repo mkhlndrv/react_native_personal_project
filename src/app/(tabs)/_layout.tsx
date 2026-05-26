@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { Tabs } from "expo-router"
 
-import { colors } from "#design/foundations"
+import { colors, fonts } from "#design/foundations"
 
 type IconProps = { focused: boolean; color: string; size: number }
 
@@ -25,14 +25,14 @@ const TabsLayout: React.FC = () => {
         tabBarActiveTintColor: colors.brand,
         tabBarInactiveTintColor: colors.muted,
         tabBarLabelStyle: {
-          fontFamily: "JetBrainsMono_600SemiBold",
+          fontFamily: fonts.semibold,
           fontSize: 11,
         },
         headerStyle: { backgroundColor: colors.background },
         headerTintColor: colors.body,
         headerShadowVisible: false,
         headerTitleStyle: {
-          fontFamily: "JetBrainsMono_700Bold",
+          fontFamily: fonts.bold,
           fontSize: 16,
         },
       }}

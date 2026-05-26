@@ -1,4 +1,5 @@
 export * as colors from "./colors"
+export * as fonts from "./fonts"
 export * as shapes from "./shapes"
 export * as spacing from "./spacing"
 export * as typography from "./typography"
