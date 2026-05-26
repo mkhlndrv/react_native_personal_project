@@ -9,7 +9,8 @@ import {
   View,
 } from "react-native"
 
-import RaceRow, { type Race } from "./RaceRow"
+import RaceRow from "./RaceRow"
+import { type Race } from "./types"
 
 type Status = "loading" | "ready" | "error" | "empty"
 

@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "main": "expo-router/entry",
+  "imports": {
+    "#features/*": "./src/features/*/index.ts",
+    "#shared/*": "./src/shared/*/index.ts"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

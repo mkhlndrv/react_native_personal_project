@@ -1,4 +1,4 @@
-import Calendar from "../../../src/Calendar"
+import { Calendar } from "#features/races"
 
 const Home: React.FC = () => {
   return <Calendar />

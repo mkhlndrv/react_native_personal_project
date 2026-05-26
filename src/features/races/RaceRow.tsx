@@ -1,16 +1,8 @@
 import { StyleSheet, Text, View } from "react-native"
 
-import { flagForCountry } from "./lib/flags"
+import { flagForCountry } from "#shared/flags"
 
-export type Race = {
-  round: string
-  raceName: string
-  date: string
-  Circuit: {
-    circuitName: string
-    Location: { country: string }
-  }
-}
+import { type Race } from "./types"
 
 type Props = {
   race: Race

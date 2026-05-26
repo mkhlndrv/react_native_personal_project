@@ -2,29 +2,9 @@ import { Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
 
-import { flagForCountry } from "../../../../src/lib/flags"
+import { flagForCountry } from "#shared/flags"
 
-type Session = {
-  date: string
-  time?: string
-}
-
-type Race = {
-  season: string
-  round: string
-  raceName: string
-  date: string
-  time?: string
-  Circuit: {
-    circuitName: string
-    Location: { country: string; locality: string }
-  }
-  FirstPractice?: Session
-  SecondPractice?: Session
-  ThirdPractice?: Session
-  Qualifying?: Session
-  Sprint?: Session
-}
+import { type Race, type Session } from "./types"
 
 type ApiResponse = {
   MRData: { RaceTable: { Races: Race[] } }
