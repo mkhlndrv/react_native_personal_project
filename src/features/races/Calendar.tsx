@@ -1,15 +1,9 @@
-import { Link } from "expo-router"
 import { useEffect, useState } from "react"
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native"
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native"
 
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
+import { useFavoriteRaces } from "#shared/storage"
 
 import RaceRow from "./RaceRow"
 import { type Race } from "./types"
@@ -25,6 +19,7 @@ const SEASON = 2026
 const Calendar: React.FC = () => {
   const [races, setRaces] = useState<Race[]>([])
   const [status, setStatus] = useState<Status>("loading")
+  const { isFavorite, toggle } = useFavoriteRaces()
 
   useEffect(() => {
     let cancelled = false
@@ -75,19 +70,38 @@ const Calendar: React.FC = () => {
 
   const today = new Date()
   const nextRound = races.find((r) => new Date(r.date) >= today)?.round
+  const pinned = races.filter((r) => isFavorite(r.round))
+
+  const renderRow = (race: Race): React.ReactElement => (
+    <RaceRow
+      race={race}
+      isNext={race.round === nextRound}
+      isStarred={isFavorite(race.round)}
+      onToggleStar={() => toggle(race.round)}
+    />
+  )
 
   return (
     <FlatList
       style={styles.list}
       data={races}
       keyExtractor={(race) => race.round}
-      renderItem={({ item }) => (
-        <Link href={`/race/${item.round}`} asChild>
-          <Pressable>
-            <RaceRow race={item} isNext={item.round === nextRound} />
-          </Pressable>
-        </Link>
-      )}
+      renderItem={({ item }) => renderRow(item)}
+      ListHeaderComponent={
+        pinned.length > 0 ? (
+          <View style={styles.pinned}>
+            <View style={styles.pinnedHeader}>
+              <Typography variant="label">Pinned</Typography>
+            </View>
+            {pinned.map((race) => (
+              <View key={`pinned-${race.round}`}>{renderRow(race)}</View>
+            ))}
+            <View style={styles.pinnedFooter}>
+              <Typography variant="label">All races</Typography>
+            </View>
+          </View>
+        ) : null
+      }
     />
   )
 }
@@ -104,5 +118,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: spacing.inside,
     backgroundColor: colors.background,
+  },
+  pinned: {
+    backgroundColor: colors.background,
+  },
+  pinnedHeader: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
+  },
+  pinnedFooter: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    marginTop: spacing.md,
   },
 })

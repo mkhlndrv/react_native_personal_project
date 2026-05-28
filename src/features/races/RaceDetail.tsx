@@ -1,12 +1,14 @@
+import Ionicons from "@expo/vector-icons/Ionicons"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { ActivityIndicator, StyleSheet, View } from "react-native"
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native"
 
 import Card from "#design/elements/Card"
 import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
+import { useFavoriteRaces } from "#shared/storage"
 
 import { type Race, type Session } from "./types"
 
@@ -67,6 +69,7 @@ const RaceDetail: React.FC = () => {
   const { round } = useLocalSearchParams<{ round: string }>()
   const [race, setRace] = useState<Race | null>(null)
   const [status, setStatus] = useState<Status>("loading")
+  const { isFavorite, toggle } = useFavoriteRaces()
 
   useEffect(() => {
     if (!round) return
@@ -131,7 +134,20 @@ const RaceDetail: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.hero}>
           <CountryChip country={race.Circuit.Location.country} size="lg" />
-          <Typography variant="title">{race.raceName}</Typography>
+          <View style={styles.heading}>
+            <Typography variant="title">{race.raceName}</Typography>
+            <Pressable
+              onPress={() => toggle(race.round)}
+              hitSlop={10}
+              accessibilityLabel="Toggle favourite"
+            >
+              <Ionicons
+                name={isFavorite(race.round) ? "star" : "star-outline"}
+                size={26}
+                color={isFavorite(race.round) ? colors.brand : colors.muted}
+              />
+            </Pressable>
+          </View>
           <Typography variant="muted">
             {race.Circuit.circuitName}
             {race.Circuit.Location.locality
@@ -185,6 +201,11 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: "center",
     paddingVertical: spacing.inside,
+    gap: spacing.md,
+  },
+  heading: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: spacing.md,
   },
   sessionRow: {
