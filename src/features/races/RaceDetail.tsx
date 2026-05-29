@@ -6,8 +6,9 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native"
 import Card from "#design/elements/Card"
 import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
-import { colors, spacing } from "#design/foundations"
+import { colors, shapes, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
+import { useRaceReminder } from "#shared/notifications"
 import { useFavoriteRaces } from "#shared/storage"
 
 import { type Race, type Session } from "./types"
@@ -70,6 +71,7 @@ const RaceDetail: React.FC = () => {
   const [race, setRace] = useState<Race | null>(null)
   const [status, setStatus] = useState<Status>("loading")
   const { isFavorite, toggle } = useFavoriteRaces()
+  const reminder = useRaceReminder(race)
 
   useEffect(() => {
     if (!round) return
@@ -178,6 +180,38 @@ const RaceDetail: React.FC = () => {
             )
           })}
         </Card>
+
+        {reminder.status === "ready" ? (
+          <Pressable
+            onPress={() => {
+              void reminder.toggle()
+            }}
+            style={[
+              styles.reminder,
+              reminder.isSet ? styles.reminderActive : null,
+            ]}
+            accessibilityLabel="Toggle race reminder"
+          >
+            <Ionicons
+              name={reminder.isSet ? "notifications" : "notifications-outline"}
+              size={18}
+              color={reminder.isSet ? colors.background : colors.body}
+            />
+            <Typography variant="normal">
+              {reminder.isSet ? "Reminder set" : "Remind me 1 hour before"}
+            </Typography>
+          </Pressable>
+        ) : reminder.status === "past" ? (
+          <View style={styles.reminderNote}>
+            <Typography variant="muted">This race has finished.</Typography>
+          </View>
+        ) : reminder.status === "unsupported" ? (
+          <View style={styles.reminderNote}>
+            <Typography variant="muted">
+              Reminders need a phone — they don&apos;t fire on web.
+            </Typography>
+          </View>
+        ) : null}
       </View>
     </>
   )
@@ -225,5 +259,26 @@ const styles = StyleSheet.create({
   },
   pillSlot: {
     marginLeft: "auto",
+  },
+  reminder: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.md,
+    marginTop: spacing.between,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: shapes.card,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  reminderActive: {
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
+  },
+  reminderNote: {
+    marginTop: spacing.between,
+    alignItems: "center",
   },
 })

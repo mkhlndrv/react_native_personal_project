@@ -12,6 +12,7 @@ import { type Race } from "./types"
 type Props = {
   race: Race
   isNext: boolean
+  isPast: boolean
   isStarred: boolean
   onToggleStar: () => void
 }
@@ -24,11 +25,12 @@ const formatDate = (iso: string): string =>
 const RaceRow: React.FC<Props> = ({
   race,
   isNext,
+  isPast,
   isStarred,
   onToggleStar,
 }) => {
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, isPast && styles.rowPast]}>
       <Link href={`/race/${race.round}`} asChild>
         <Pressable style={styles.main}>
           <CountryChip country={race.Circuit.Location.country} />
@@ -71,6 +73,9 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
+  },
+  rowPast: {
+    opacity: 0.45,
   },
   main: {
     flex: 1,

@@ -76,6 +76,7 @@ const Calendar: React.FC = () => {
     <RaceRow
       race={race}
       isNext={race.round === nextRound}
+      isPast={new Date(race.date) < today}
       isStarred={isFavorite(race.round)}
       onToggleStar={() => toggle(race.round)}
     />
