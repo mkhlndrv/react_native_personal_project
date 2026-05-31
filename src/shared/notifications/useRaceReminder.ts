@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Platform } from "react-native"
 
 import { type Race } from "#features/races"
+import { useSettings } from "#shared/storage"
 
 import {
   cancelRaceReminder,
@@ -9,7 +10,7 @@ import {
   scheduleRaceReminder,
 } from "./raceReminders"
 
-type Status = "loading" | "ready" | "past" | "unsupported"
+type Status = "loading" | "ready" | "past" | "disabled" | "unsupported"
 
 type Api = {
   isSet: boolean
@@ -25,6 +26,7 @@ const raceStart = (race: Race): number =>
 export function useRaceReminder(race: Race | null): Api {
   const [isSet, setIsSet] = useState(false)
   const [status, setStatus] = useState<Status>("loading")
+  const { notificationsEnabled, reminderLeadMinutes } = useSettings()
   const round = race?.round
   const startAt = race ? raceStart(race) : null
 
@@ -38,6 +40,10 @@ export function useRaceReminder(race: Race | null): Api {
       setStatus("unsupported")
       return
     }
+    if (!notificationsEnabled) {
+      setStatus("disabled")
+      return
+    }
 
     let cancelled = false
     void isReminderSet(round).then((set) => {
@@ -49,7 +55,7 @@ export function useRaceReminder(race: Race | null): Api {
     return () => {
       cancelled = true
     }
-  }, [round, startAt])
+  }, [round, startAt, notificationsEnabled])
 
   const toggle = useCallback(async () => {
     if (!race || status !== "ready") return
@@ -57,10 +63,10 @@ export function useRaceReminder(race: Race | null): Api {
       await cancelRaceReminder(race.round)
       setIsSet(false)
     } else {
-      const ok = await scheduleRaceReminder(race)
+      const ok = await scheduleRaceReminder(race, reminderLeadMinutes)
       if (ok) setIsSet(true)
     }
-  }, [race, isSet, status])
+  }, [race, isSet, status, reminderLeadMinutes])
 
   return { isSet, status, toggle }
 }

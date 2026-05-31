@@ -3,7 +3,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native"
 
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
-import { useFavoriteRaces } from "#shared/storage"
+import { useFavoriteRaces, useSettings } from "#shared/storage"
 
 import RaceRow from "./RaceRow"
 import { type Race } from "./types"
@@ -20,6 +20,7 @@ const Calendar: React.FC = () => {
   const [races, setRaces] = useState<Race[]>([])
   const [status, setStatus] = useState<Status>("loading")
   const { isFavorite, toggle } = useFavoriteRaces()
+  const { showOnlyStarred, hidePastRaces } = useSettings()
 
   useEffect(() => {
     let cancelled = false
@@ -69,8 +70,12 @@ const Calendar: React.FC = () => {
   }
 
   const today = new Date()
-  const nextRound = races.find((r) => new Date(r.date) >= today)?.round
-  const pinned = races.filter((r) => isFavorite(r.round))
+  const isPastRace = (race: Race): boolean => new Date(race.date) < today
+  const nextRound = races.find((r) => !isPastRace(r))?.round
+  const filterPast = (list: Race[]): Race[] =>
+    hidePastRaces ? list.filter((r) => !isPastRace(r)) : list
+  const pinned = filterPast(races.filter((r) => isFavorite(r.round)))
+  const visible = showOnlyStarred ? pinned : filterPast(races)
 
   const renderRow = (race: Race): React.ReactElement => (
     <RaceRow
@@ -82,14 +87,26 @@ const Calendar: React.FC = () => {
     />
   )
 
+  if (visible.length === 0) {
+    return (
+      <View style={styles.center}>
+        <Typography variant="muted">
+          {showOnlyStarred && pinned.length === 0
+            ? "No starred races match. Tap a star on any race to pin it."
+            : "No races match your current filters."}
+        </Typography>
+      </View>
+    )
+  }
+
   return (
     <FlatList
       style={styles.list}
-      data={races}
+      data={visible}
       keyExtractor={(race) => race.round}
       renderItem={({ item }) => renderRow(item)}
       ListHeaderComponent={
-        pinned.length > 0 ? (
+        !showOnlyStarred && pinned.length > 0 ? (
           <View style={styles.pinned}>
             <View style={styles.pinnedHeader}>
               <Typography variant="label">Pinned</Typography>

@@ -5,7 +5,6 @@ import { Platform } from "react-native"
 import { type Race } from "#features/races"
 
 const STORAGE_KEY = "skypit:reminder-ids"
-const LEAD_MINUTES = 60
 
 type ReminderMap = Record<string, string>
 
@@ -23,7 +22,10 @@ export const isReminderSet = async (round: string): Promise<boolean> => {
   return Boolean(map[round])
 }
 
-export const scheduleRaceReminder = async (race: Race): Promise<boolean> => {
+export const scheduleRaceReminder = async (
+  race: Race,
+  leadMinutes: number,
+): Promise<boolean> => {
   if (Platform.OS === "web") return false
 
   const permission = await Notifications.requestPermissionsAsync()
@@ -31,14 +33,14 @@ export const scheduleRaceReminder = async (race: Race): Promise<boolean> => {
 
   const iso = race.time ? `${race.date}T${race.time}` : `${race.date}T00:00:00Z`
   const fireAt = new Date(iso)
-  fireAt.setMinutes(fireAt.getMinutes() - LEAD_MINUTES)
+  fireAt.setMinutes(fireAt.getMinutes() - leadMinutes)
 
   if (fireAt.getTime() <= Date.now()) return false
 
   const id = await Notifications.scheduleNotificationAsync({
     content: {
       title: race.raceName,
-      body: `Lights out in ${LEAD_MINUTES} minutes — ${race.Circuit.circuitName}.`,
+      body: `Lights out in ${leadMinutes} minutes — ${race.Circuit.circuitName}.`,
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DATE,

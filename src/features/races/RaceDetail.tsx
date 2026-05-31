@@ -9,7 +9,7 @@ import Typography from "#design/elements/Typography"
 import { colors, shapes, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
 import { useRaceReminder } from "#shared/notifications"
-import { useFavoriteRaces } from "#shared/storage"
+import { useFavoriteRaces, useSettings } from "#shared/storage"
 
 import { type Race, type Session } from "./types"
 
@@ -48,6 +48,15 @@ const formatTime = (session: Session): string => {
   })
 }
 
+const formatLeadTime = (minutes: number): string => {
+  if (minutes < 60) return `${minutes} min`
+  if (minutes % 60 === 0) {
+    const hours = minutes / 60
+    return hours === 1 ? "1 hour" : `${hours} hours`
+  }
+  return `${minutes} min`
+}
+
 const buildSessions = (race: Race): SessionRow[] => {
   const out: SessionRow[] = []
   const push = (label: string, session?: Session): void => {
@@ -71,6 +80,7 @@ const RaceDetail: React.FC = () => {
   const [race, setRace] = useState<Race | null>(null)
   const [status, setStatus] = useState<Status>("loading")
   const { isFavorite, toggle } = useFavoriteRaces()
+  const { reminderLeadMinutes } = useSettings()
   const reminder = useRaceReminder(race)
 
   useEffect(() => {
@@ -198,12 +208,20 @@ const RaceDetail: React.FC = () => {
               color={reminder.isSet ? colors.background : colors.body}
             />
             <Typography variant="normal">
-              {reminder.isSet ? "Reminder set" : "Remind me 1 hour before"}
+              {reminder.isSet
+                ? "Reminder set"
+                : `Remind me ${formatLeadTime(reminderLeadMinutes)} before`}
             </Typography>
           </Pressable>
         ) : reminder.status === "past" ? (
           <View style={styles.reminderNote}>
             <Typography variant="muted">This race has finished.</Typography>
+          </View>
+        ) : reminder.status === "disabled" ? (
+          <View style={styles.reminderNote}>
+            <Typography variant="muted">
+              Race reminders are off. Turn them on in Settings.
+            </Typography>
           </View>
         ) : reminder.status === "unsupported" ? (
           <View style={styles.reminderNote}>
