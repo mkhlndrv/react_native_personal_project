@@ -3,7 +3,7 @@ import { StyleSheet, Text } from "react-native"
 
 import { typography } from "#design/foundations"
 
-export type TypographyProps = {
+type TypographyProps = {
   variant?: keyof typeof typography
   children: React.ReactNode
 } & (

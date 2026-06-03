@@ -3,9 +3,9 @@ import { ScrollView, StyleSheet, Switch, TextInput, View } from "react-native"
 import Card from "#design/elements/Card"
 import Typography from "#design/elements/Typography"
 import { colors, fonts, shapes, spacing } from "#design/foundations"
-import { useSettings } from "#shared/storage"
 
 import { useLeadTimeInput } from "./useLeadTimeInput"
+import { useSettings } from "./useSettings"
 
 const Settings: React.FC = () => {
   const settings = useSettings()

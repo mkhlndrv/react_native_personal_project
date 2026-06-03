@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { REMINDER_LEAD_MAX, REMINDER_LEAD_MIN } from "#shared/storage"
+import { REMINDER_LEAD_MAX, REMINDER_LEAD_MIN } from "./useSettings"
 
 type Api = {
   draft: string

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native"
 
 import { colors, fonts, shapes, spacing } from "#design/foundations"
 
-export type PillProps = {
+type PillProps = {
   children: React.ReactNode
 }
 

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native"
 import { colors, fonts, shapes } from "#design/foundations"
 import { codeForCountry } from "#shared/countries"
 
-export type CountryChipProps = {
+type CountryChipProps = {
   country: string
   size?: "sm" | "md" | "lg"
 }

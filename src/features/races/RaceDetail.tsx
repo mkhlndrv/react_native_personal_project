@@ -8,10 +8,11 @@ import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
 import { colors, shapes, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
-import { useRaceReminder } from "#shared/notifications"
-import { useFavoriteRaces, useSettings } from "#shared/storage"
+import { useSettings } from "#features/settings"
 
 import { type Race, type Session } from "./types"
+import { useFavoriteRaces } from "./useFavoriteRaces"
+import { useRaceReminder } from "./useRaceReminder"
 
 type ApiResponse = {
   MRData: { RaceTable: { Races: Race[] } }

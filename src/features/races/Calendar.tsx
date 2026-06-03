@@ -3,10 +3,11 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native"
 
 import Typography from "#design/elements/Typography"
 import { colors, spacing } from "#design/foundations"
-import { useFavoriteRaces, useSettings } from "#shared/storage"
+import { useSettings } from "#features/settings"
 
 import RaceRow from "./RaceRow"
 import { type Race } from "./types"
+import { useFavoriteRaces } from "./useFavoriteRaces"
 
 type Status = "loading" | "ready" | "error" | "empty"
 

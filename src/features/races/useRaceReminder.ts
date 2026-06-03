@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react"
 import { Platform } from "react-native"
 
-import { type Race } from "#features/races"
-import { useSettings } from "#shared/storage"
+import { useSettings } from "#features/settings"
 
 import {
   cancelRaceReminder,
   isReminderSet,
   scheduleRaceReminder,
 } from "./raceReminders"
+import { type Race } from "./types"
 
 type Status = "loading" | "ready" | "past" | "disabled" | "unsupported"
 

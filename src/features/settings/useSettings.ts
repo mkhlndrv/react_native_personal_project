@@ -1,5 +1,11 @@
-import { STORAGE_KEYS } from "./keys"
-import { usePersistedState } from "./usePersistedState"
+import { usePersistedState } from "#shared/persistence"
+
+const STORAGE_KEYS = {
+  reminderLeadMinutes: "skypit:reminder-lead-minutes",
+  notificationsEnabled: "skypit:notifications-enabled",
+  showOnlyStarred: "skypit:show-only-starred",
+  hidePastRaces: "skypit:hide-past-races",
+} as const
 
 export const REMINDER_LEAD_MIN = 5
 export const REMINDER_LEAD_MAX = 24 * 60

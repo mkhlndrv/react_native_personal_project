@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native"
 
 import { colors, shapes, spacing } from "#design/foundations"
 
-export type CardProps = {
+type CardProps = {
   children: React.ReactNode
 }
 

@@ -1,5 +1,6 @@
-import { STORAGE_KEYS } from "./keys"
-import { usePersistedState } from "./usePersistedState"
+import { usePersistedState } from "#shared/persistence"
+
+const STORAGE_KEY = "skypit:favorite-races"
 
 type Api = {
   favorites: string[]
@@ -10,7 +11,7 @@ type Api = {
 
 export function useFavoriteRaces(): Api {
   const [favorites, setFavorites, loaded] = usePersistedState<string[]>(
-    STORAGE_KEYS.favoriteRaces,
+    STORAGE_KEY,
     [],
   )
 

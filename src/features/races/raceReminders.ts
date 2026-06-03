@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import * as Notifications from "expo-notifications"
 import { Platform } from "react-native"
 
-import { type Race } from "#features/races"
+import { type Race } from "./types"
 
 const STORAGE_KEY = "skypit:reminder-ids"
 
