@@ -1,7 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native"
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native"
 
 import Card from "#design/elements/Card"
 import Pill from "#design/elements/Pill"
@@ -10,12 +16,26 @@ import { colors, shapes, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
 import { useSettings } from "#features/settings"
 
-import { type Race, type Session } from "./types"
+import ResultRow from "./ResultRow"
+import { type Race, type ResultEntry, type Session } from "./types"
 import { useFavoriteRaces } from "./useFavoriteRaces"
 import { useRaceReminder } from "./useRaceReminder"
 
 type ApiResponse = {
   MRData: { RaceTable: { Races: Race[] } }
+}
+
+type RawResult = {
+  position: string
+  points: string
+  status: string
+  Driver: { givenName: string; familyName: string }
+  Constructor: { name: string }
+  Time?: { time: string }
+}
+
+type ResultsResponse = {
+  MRData: { RaceTable: { Races: Array<{ Results: RawResult[] }> } }
 }
 
 type Status = "loading" | "ready" | "error" | "missing"
@@ -76,9 +96,25 @@ const buildSessions = (race: Race): SessionRow[] => {
   return out
 }
 
+const outcome = (r: RawResult): string => {
+  if (r.Time) return r.Time.time
+  if (r.status === "Did not start") return "DNS"
+  if (r.status.startsWith("+")) return r.status
+  return "DNF"
+}
+
+const toResult = (r: RawResult): ResultEntry => ({
+  position: r.position,
+  driver: `${r.Driver.givenName} ${r.Driver.familyName}`,
+  team: r.Constructor.name,
+  outcome: outcome(r),
+  points: r.points,
+})
+
 const RaceDetail: React.FC = () => {
   const { round } = useLocalSearchParams<{ round: string }>()
   const [race, setRace] = useState<Race | null>(null)
+  const [results, setResults] = useState<ResultEntry[]>([])
   const [status, setStatus] = useState<Status>("loading")
   const { isFavorite, toggle } = useFavoriteRaces()
   const { reminderLeadMinutes } = useSettings()
@@ -104,6 +140,24 @@ const RaceDetail: React.FC = () => {
       .catch(() => {
         if (!cancelled) setStatus("error")
       })
+
+    return () => {
+      cancelled = true
+    }
+  }, [round])
+
+  useEffect(() => {
+    if (!round) return
+    let cancelled = false
+
+    fetch(`https://api.jolpi.ca/ergast/f1/2026/${round}/results.json`)
+      .then((r) => r.json())
+      .then((raw: ResultsResponse) => {
+        if (cancelled) return
+        const races = raw.MRData.RaceTable.Races
+        setResults(races.length ? races[0].Results.map(toResult) : [])
+      })
+      .catch(() => undefined)
 
     return () => {
       cancelled = true
@@ -144,7 +198,10 @@ const RaceDetail: React.FC = () => {
     <>
       <Stack.Screen options={{ title: race.raceName }} />
 
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.hero}>
           <CountryChip country={race.Circuit.Location.country} size="lg" />
           <View style={styles.heading}>
@@ -192,6 +249,17 @@ const RaceDetail: React.FC = () => {
           })}
         </Card>
 
+        {results.length > 0 ? (
+          <View style={styles.results}>
+            <View style={styles.resultsHeading}>
+              <Typography variant="label">Result</Typography>
+            </View>
+            {results.map((entry) => (
+              <ResultRow key={entry.position} entry={entry} />
+            ))}
+          </View>
+        ) : null}
+
         {reminder.status === "ready" ? (
           <Pressable
             onPress={() => {
@@ -231,7 +299,7 @@ const RaceDetail: React.FC = () => {
             </Typography>
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </>
   )
 }
@@ -242,7 +310,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  content: {
     paddingHorizontal: spacing.screen,
+    paddingBottom: spacing.between,
   },
   center: {
     flex: 1,
@@ -278,6 +349,12 @@ const styles = StyleSheet.create({
   },
   pillSlot: {
     marginLeft: "auto",
+  },
+  results: {
+    marginTop: spacing.between,
+  },
+  resultsHeading: {
+    paddingBottom: spacing.sm,
   },
   reminder: {
     flexDirection: "row",

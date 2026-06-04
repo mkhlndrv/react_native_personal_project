@@ -19,3 +19,11 @@ export type Race = {
   Qualifying?: Session
   Sprint?: Session
 }
+
+export type ResultEntry = {
+  position: string
+  driver: string
+  team: string
+  outcome: string
+  points: string
+}
