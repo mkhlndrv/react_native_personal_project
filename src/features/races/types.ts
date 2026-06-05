@@ -22,7 +22,9 @@ export type Race = {
 
 export type ResultEntry = {
   position: string
+  driverId: string
   driver: string
+  constructorId: string
   team: string
   outcome: string
   points: string

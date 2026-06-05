@@ -19,4 +19,12 @@ describe("StandingRow", () => {
     expect(getByText("Red Bull")).toBeTruthy()
     expect(getByText("169")).toBeTruthy()
   })
+
+  it("shows a favourite marker only when highlighted", () => {
+    const { queryByLabelText, rerender } = render(<StandingRow entry={entry} />)
+    expect(queryByLabelText("Favourite")).toBeNull()
+
+    rerender(<StandingRow entry={entry} highlight />)
+    expect(queryByLabelText("Favourite")).toBeTruthy()
+  })
 })

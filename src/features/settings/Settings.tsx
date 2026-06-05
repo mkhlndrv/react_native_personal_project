@@ -1,14 +1,26 @@
-import { ScrollView, StyleSheet, Switch, TextInput, View } from "react-native"
+import Ionicons from "@expo/vector-icons/Ionicons"
+import { Link } from "expo-router"
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  TextInput,
+  View,
+} from "react-native"
 
 import Card from "#design/elements/Card"
 import Typography from "#design/elements/Typography"
 import { colors, fonts, shapes, spacing } from "#design/foundations"
 
+import { useFavoriteCompetitor } from "./useFavoriteCompetitor"
 import { useLeadTimeInput } from "./useLeadTimeInput"
 import { useSettings } from "./useSettings"
 
 const Settings: React.FC = () => {
   const settings = useSettings()
+  const { favorite: favoriteDriver } = useFavoriteCompetitor("driver")
+  const { favorite: favoriteConstructor } = useFavoriteCompetitor("constructor")
   const leadTime = useLeadTimeInput(
     settings.reminderLeadMinutes,
     settings.setReminderLeadMinutes,
@@ -98,6 +110,45 @@ const Settings: React.FC = () => {
           />
         </View>
       </Card>
+
+      <Typography variant="label">Favourites</Typography>
+      <Card>
+        <Link href="/favorite/driver" asChild>
+          <Pressable style={styles.row} accessibilityRole="button">
+            <View style={styles.rowText}>
+              <Typography variant="large">Favourite driver</Typography>
+              <Typography variant="muted">
+                Pinned to the top of the drivers&apos; standings.
+              </Typography>
+            </View>
+            <View style={styles.value}>
+              <Typography variant="normal">
+                {favoriteDriver?.name ?? "None"}
+              </Typography>
+              <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+            </View>
+          </Pressable>
+        </Link>
+
+        <View style={styles.divider} />
+
+        <Link href="/favorite/constructor" asChild>
+          <Pressable style={styles.row} accessibilityRole="button">
+            <View style={styles.rowText}>
+              <Typography variant="large">Favourite constructor</Typography>
+              <Typography variant="muted">
+                Pinned to the top of the constructors&apos; standings.
+              </Typography>
+            </View>
+            <View style={styles.value}>
+              <Typography variant="normal">
+                {favoriteConstructor?.name ?? "None"}
+              </Typography>
+              <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+            </View>
+          </Pressable>
+        </Link>
+      </Card>
     </ScrollView>
   )
 }
@@ -122,6 +173,11 @@ const styles = StyleSheet.create({
   rowText: {
     flex: 1,
     gap: spacing.xs,
+  },
+  value: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
   },
   divider: {
     height: StyleSheet.hairlineWidth,

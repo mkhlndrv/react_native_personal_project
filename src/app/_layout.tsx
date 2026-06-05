@@ -38,6 +38,7 @@ const RootLayout: React.FC = () => {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="favorite/[kind]" options={{ title: "Favourite" }} />
       </Stack>
     </>
   )
