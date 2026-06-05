@@ -14,12 +14,13 @@ import Pill from "#design/elements/Pill"
 import Typography from "#design/elements/Typography"
 import { colors, shapes, spacing } from "#design/foundations"
 import CountryChip from "#design/patterns/CountryChip"
-import { useSettings } from "#features/settings"
+import { useFavoriteCompetitor, useSettings } from "#features/settings"
 
 import ResultRow from "./ResultRow"
 import { type Race, type ResultEntry, type Session } from "./types"
 import { useFavoriteRaces } from "./useFavoriteRaces"
 import { useRaceReminder } from "./useRaceReminder"
+import { useSeason } from "./useSeason"
 
 type ApiResponse = {
   MRData: { RaceTable: { Races: Race[] } }
@@ -29,8 +30,8 @@ type RawResult = {
   position: string
   points: string
   status: string
-  Driver: { givenName: string; familyName: string }
-  Constructor: { name: string }
+  Driver: { driverId: string; givenName: string; familyName: string }
+  Constructor: { constructorId: string; name: string }
   Time?: { time: string }
 }
 
@@ -105,7 +106,9 @@ const outcome = (r: RawResult): string => {
 
 const toResult = (r: RawResult): ResultEntry => ({
   position: r.position,
+  driverId: r.Driver.driverId,
   driver: `${r.Driver.givenName} ${r.Driver.familyName}`,
+  constructorId: r.Constructor.constructorId,
   team: r.Constructor.name,
   outcome: outcome(r),
   points: r.points,
@@ -118,6 +121,9 @@ const RaceDetail: React.FC = () => {
   const [status, setStatus] = useState<Status>("loading")
   const { isFavorite, toggle } = useFavoriteRaces()
   const { reminderLeadMinutes } = useSettings()
+  const { season } = useSeason()
+  const { favorite: favoriteDriver } = useFavoriteCompetitor("driver")
+  const { favorite: favoriteConstructor } = useFavoriteCompetitor("constructor")
   const reminder = useRaceReminder(race)
 
   useEffect(() => {
@@ -125,7 +131,7 @@ const RaceDetail: React.FC = () => {
     let cancelled = false
     setStatus("loading")
 
-    fetch(`https://api.jolpi.ca/ergast/f1/2026/${round}.json`)
+    fetch(`https://api.jolpi.ca/ergast/f1/${season}/${round}.json`)
       .then((r) => r.json())
       .then((raw: ApiResponse) => {
         if (cancelled) return
@@ -144,13 +150,13 @@ const RaceDetail: React.FC = () => {
     return () => {
       cancelled = true
     }
-  }, [round])
+  }, [round, season])
 
   useEffect(() => {
     if (!round) return
     let cancelled = false
 
-    fetch(`https://api.jolpi.ca/ergast/f1/2026/${round}/results.json`)
+    fetch(`https://api.jolpi.ca/ergast/f1/${season}/${round}/results.json`)
       .then((r) => r.json())
       .then((raw: ResultsResponse) => {
         if (cancelled) return
@@ -162,7 +168,7 @@ const RaceDetail: React.FC = () => {
     return () => {
       cancelled = true
     }
-  }, [round])
+  }, [round, season])
 
   if (status === "loading") {
     return (
@@ -255,7 +261,14 @@ const RaceDetail: React.FC = () => {
               <Typography variant="label">Result</Typography>
             </View>
             {results.map((entry) => (
-              <ResultRow key={entry.position} entry={entry} />
+              <ResultRow
+                key={entry.position}
+                entry={entry}
+                highlight={
+                  entry.driverId === favoriteDriver?.id ||
+                  entry.constructorId === favoriteConstructor?.id
+                }
+              />
             ))}
           </View>
         ) : null}

@@ -16,7 +16,7 @@ const HomeStackLayout: React.FC = () => {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "2026 Calendar" }} />
+      <Stack.Screen name="index" options={{ title: "Calendar" }} />
       <Stack.Screen name="race/[round]" options={{ title: "Race" }} />
     </Stack>
   )
