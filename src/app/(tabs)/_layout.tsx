@@ -1,9 +1,10 @@
 import Ionicons from "@expo/vector-icons/Ionicons"
 import { Tabs } from "expo-router"
+import { type ColorValue } from "react-native"
 
 import { colors, fonts } from "#design/foundations"
 
-type IconProps = { focused: boolean; color: string; size: number }
+type IconProps = { focused: boolean; color: ColorValue; size: number }
 
 const icon =
   (
